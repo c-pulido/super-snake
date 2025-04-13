@@ -1,0 +1,43 @@
+# === Java ===
+*.class
+*.jar
+*.war
+*.ear
+
+# === Maven ===
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+
+# === Logs ===
+*.log
+
+# === IDEs ===
+# IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === Env/config ===
+*.env
+.env.*
+*.local
+application-dev.properties
+application-prod.properties
+
+# === Database ===
+*.db
+*.sql
+*.mv.db
+
+# === Secrets (example only) ===
+secret.key
+*.keystore
