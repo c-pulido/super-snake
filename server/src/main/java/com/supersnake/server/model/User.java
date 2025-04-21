@@ -1,13 +1,9 @@
+// server/src/main/java/com/supersnake/server/model/User.java
 package com.supersnake.server.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "users")
 public class User {
 
@@ -15,13 +11,60 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
     private String password;
 
-    private String skin = "classic";
+    private String skin;
 
-    private int highScore = 0;
+    @Column(name = "high_score")
+    private int highScore;
+
+    public User() {
+    }
+
+    public User(String username, String password, String skin, int highScore) {
+        this.username = username;
+        this.password = password;
+        this.skin = skin;
+        this.highScore = highScore;
+    }
+
+    // GETTERS AND SETTERS
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSkin() {
+        return skin;
+    }
+
+    public void setSkin(String skin) {
+        this.skin = skin;
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void setHighScore(int highScore) {
+        this.highScore = highScore;
+    }
 }

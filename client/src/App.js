@@ -4,14 +4,12 @@ import LiveGame from "./pages/LiveGame";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
-import SignupButton from "./components/SignupButton"; // <-- Make sure this exists
-import './App.css'; // For styling (optional)
+import './App.css'; // Optional: for shared styling
 
 function App() {
   return (
     <Router>
       <div className="app-container">
-        <SignupButton /> {/* Top-right floating button */}
         <Routes>
           <Route path="/" element={<LiveGame />} />
           <Route path="/login" element={<LoginPage />} />

@@ -24,4 +24,9 @@ public class AuthController {
     public User login(@RequestBody AuthRequest request) {
         return authService.login(request.username(), request.password());
     }
+
+    @PostMapping("/guest")
+    public User createGuest() {
+        return authService.createGuestUser();
+    }
 }

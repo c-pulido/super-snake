@@ -1,3 +1,4 @@
+// server/src/main/java/com/supersnake/server/config/SecurityConfig.java
 package com.supersnake.server.config;
 
 import org.springframework.context.annotation.Bean;
@@ -17,8 +18,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .httpBasic().disable()
-            .formLogin().disable();  // disable Spring login form
+            .formLogin().disable();
         return http.build();
     }
 }
-
