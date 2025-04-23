@@ -1,19 +1,35 @@
-// client/src/components/GameBoard.js
 import React, { useEffect, useRef, useState } from 'react';
 
 const CELL_SIZE = 20;
 const WIDTH = 20;
 const HEIGHT = 20;
 
-const GameBoard = ({ direction }) => {
+const GameBoard = ({ direction, gameState, onGameOver }) => {
   const [snake, setSnake] = useState([[10, 10]]);
-  const [gameOver, setGameOver] = useState(false);
+  const [food, setFood] = useState(generateFood());
   const intervalRef = useRef();
+  const [score, setScore] = useState(0);
+
+  function generateFood() {
+    const x = Math.floor(Math.random() * WIDTH);
+    const y = Math.floor(Math.random() * HEIGHT);
+    return [x, y];
+  }
 
   useEffect(() => {
-    intervalRef.current = setInterval(moveSnake, 200);
+    if (gameState === 'playing') {
+      intervalRef.current = setInterval(moveSnake, 200);
+    }
     return () => clearInterval(intervalRef.current);
-  }, [snake, direction]);
+  }, [snake, direction, gameState]);
+
+  useEffect(() => {
+    if (gameState === 'playing') {
+      setSnake([[10, 10]]);
+      setFood(generateFood());
+      setScore(0);
+    }
+  }, [gameState]);
 
   const moveSnake = () => {
     const head = snake[0];
@@ -37,14 +53,24 @@ const GameBoard = ({ direction }) => {
 
     if (
       newHead[0] < 0 || newHead[1] < 0 ||
-      newHead[0] >= WIDTH || newHead[1] >= HEIGHT
+      newHead[0] >= WIDTH || newHead[1] >= HEIGHT ||
+      snake.some(([x, y]) => x === newHead[0] && y === newHead[1])
     ) {
-      setGameOver(true);
       clearInterval(intervalRef.current);
+      onGameOver(score); // Send final score up to LiveGame
       return;
     }
 
-    const newSnake = [newHead, ...snake.slice(0, -1)];
+    const ateFood = newHead[0] === food[0] && newHead[1] === food[1];
+    const newSnake = ateFood
+      ? [newHead, ...snake]
+      : [newHead, ...snake.slice(0, -1)];
+
+    if (ateFood) {
+      setFood(generateFood());
+      setScore(score + 1);
+    }
+
     setSnake(newSnake);
   };
 
@@ -57,11 +83,13 @@ const GameBoard = ({ direction }) => {
       margin: '20px auto',
       width: WIDTH * CELL_SIZE,
       height: HEIGHT * CELL_SIZE,
+      position: 'relative'
     }}>
       {[...Array(WIDTH * HEIGHT)].map((_, i) => {
         const x = i % WIDTH;
         const y = Math.floor(i / WIDTH);
         const isSnake = snake.some(([sx, sy]) => sx === x && sy === y);
+        const isFood = x === food[0] && y === food[1];
 
         return (
           <div
@@ -69,27 +97,12 @@ const GameBoard = ({ direction }) => {
             style={{
               width: CELL_SIZE,
               height: CELL_SIZE,
-              backgroundColor: isSnake ? 'green' : 'white',
+              backgroundColor: isSnake ? 'green' : isFood ? 'red' : 'white',
               border: '1px solid #ccc',
             }}
           />
         );
       })}
-      {gameOver && (
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: '#fff',
-          padding: '20px',
-          border: '2px solid #000',
-          zIndex: 1
-        }}>
-          <h2>Game Over</h2>
-          <button onClick={() => window.location.reload()}>Replay</button>
-        </div>
-      )}
     </div>
   );
 };

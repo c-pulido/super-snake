@@ -1,31 +1,19 @@
 import React from 'react';
+import MiniLeaderboard from './MiniLeaderboard';
+import './ReplayOverlay.css';
 
-function ReplayOverlay({ onReplay }) {
+const ReplayOverlay = ({ show, onReplay, refreshTrigger }) => {
+  if (!show) return null;
+
   return (
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      background: 'rgba(0,0,0,0.6)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      color: 'white'
-    }}>
-      <h2>Game Over</h2>
-      <button onClick={onReplay} style={{
-        padding: '10px 20px',
-        fontSize: '16px',
-        marginTop: '10px',
-        cursor: 'pointer'
-      }}>
-        Play Again
-      </button>
+    <div className="replay-overlay">
+      <div className="overlay-content">
+        <h1 className="game-over-text">GAME OVER!</h1>
+        <MiniLeaderboard refreshTrigger={refreshTrigger} />
+        <button className="replay-button" onClick={onReplay}>Replay</button>
+      </div>
     </div>
   );
-}
+};
 
 export default ReplayOverlay;

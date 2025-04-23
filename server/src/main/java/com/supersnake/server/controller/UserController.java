@@ -21,4 +21,10 @@ public class UserController {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    // New endpoint to get top 10 users sorted by high score
+    @GetMapping("/top")
+    public List<User> getTopUsers() {
+        return userRepository.findTop10ByOrderByHighScoreDesc();
+    }
 }
