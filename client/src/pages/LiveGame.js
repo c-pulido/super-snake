@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom"; // ✅ Added for Sign Up / Login links
 import GameBoard from "../components/GameBoard";
 import ReplayOverlay from "../components/ReplayOverlay";
 import axios from "axios";
 
-const LiveGame = () => {
+const LiveGame = ({ user }) => { // ✅ Receive logged-in user
   const [gameState, setGameState] = useState("playing");
   const [direction, setDirection] = useState("RIGHT");
   const [guestUser, setGuestUser] = useState(null);
   const guestCreatedRef = useRef(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);  // ✅ Used to refresh leaderboard
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    if (!guestCreatedRef.current) {
+    if (!user && !guestCreatedRef.current) { // ✅ Only create guest if NOT logged in
       guestCreatedRef.current = true;
       axios.post("http://localhost:8080/api/auth/guest")
         .then(res => {
@@ -22,25 +23,27 @@ const LiveGame = () => {
           console.error("❌ Failed to create guest user", err);
         });
     }
-  }, []);
+  }, [user]);
 
   const handleGameOver = (finalScore) => {
     setGameState("gameover");
 
-    if (guestUser) {
+    const currentUser = user || guestUser; // ✅ Use logged-in user OR guest
+
+    if (currentUser) {
       axios.post("http://localhost:8080/api/players", {
-        id: guestUser.id,
+        id: currentUser.id,
         score: finalScore,
       })
         .then(() => {
           console.log("✅ Score saved successfully");
-          setRefreshTrigger(prev => prev + 1);  // ✅ Trigger leaderboard refresh
+          setRefreshTrigger(prev => prev + 1);
         })
         .catch((err) => {
           console.error("❌ Failed to save score", err);
         });
     } else {
-      console.warn("⚠️ Guest user not ready yet");
+      console.warn("⚠️ No user ready yet");
     }
   };
 
@@ -75,6 +78,19 @@ const LiveGame = () => {
 
   return (
     <div style={{ position: "relative" }}>
+      {/* ✅ Auth buttons if user is NOT logged in */}
+      {!user && (
+        <div style={{ position: "absolute", top: 10, right: 10 }}>
+          <Link to="/signup">
+            <button style={{ marginRight: "10px" }}>Sign Up</button>
+          </Link>
+          <Link to="/login">
+            <button>Login</button>
+          </Link>
+        </div>
+      )}
+
+      {/* 🎮 Main GameBoard and ReplayOverlay */}
       <GameBoard
         gameState={gameState}
         direction={direction}
@@ -83,7 +99,7 @@ const LiveGame = () => {
       <ReplayOverlay
         show={gameState === "gameover"}
         onReplay={handleReplay}
-        refreshTrigger={refreshTrigger}  // ✅ Pass to overlay to trigger re-fetch
+        refreshTrigger={refreshTrigger}
       />
     </div>
   );
