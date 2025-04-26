@@ -34,7 +34,7 @@ Before running this project locally, ensure you have the following installed:
    mvn spring-boot:run
    ```
 
-### Frontend Setup (Coming Soon)
+### Frontend Setup 
 
 1. Navigate to the `client` directory (once available).
 2. Run `npm install` to install necessary dependencies.
