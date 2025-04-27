@@ -75,16 +75,19 @@ const GameBoard = ({ direction, gameState, onGameOver }) => {
   };
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: `repeat(${WIDTH}, ${CELL_SIZE}px)`,
-      gridTemplateRows: `repeat(${HEIGHT}, ${CELL_SIZE}px)`,
-      border: '2px solid #000',
-      margin: '20px auto',
-      width: WIDTH * CELL_SIZE,
-      height: HEIGHT * CELL_SIZE,
-      position: 'relative'
-    }}>
+    <div
+      className={gameState === "gameover" ? "flash-border" : ""}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${WIDTH}, ${CELL_SIZE}px)`,
+        gridTemplateRows: `repeat(${HEIGHT}, ${CELL_SIZE}px)`,
+        border: '2px solid #000',
+        margin: '20px auto',
+        width: WIDTH * CELL_SIZE,
+        height: HEIGHT * CELL_SIZE,
+        position: 'relative'
+      }}
+    >
       {[...Array(WIDTH * HEIGHT)].map((_, i) => {
         const x = i % WIDTH;
         const y = Math.floor(i / WIDTH);

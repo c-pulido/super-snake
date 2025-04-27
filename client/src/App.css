@@ -20,10 +20,54 @@
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  transition: transform 0.2s; /*  Add transition for pop */
+}
+
+.logout-button:hover {
+  transform: scale(1.1); /*  Slight pop on hover */
 }
 
 .auth-links a {
   margin: 0 8px;
   text-decoration: none;
   color: #333;
+}
+
+/*  Replay button animation */
+.replay-button {
+  padding: 10px 20px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: transform 0.2s;
+}
+
+.replay-button:hover {
+  transform: scale(1.1);
+}
+
+/* General form buttons (signup/login) */
+form button {
+  transition: transform 0.2s;
+}
+
+form button:hover {
+  transform: scale(1.1);
+}
+
+/* Flashing red border for game over */
+.flash-border {
+  animation: flash 0.8s infinite alternate;
+}
+
+@keyframes flash {
+  0% {
+    border-color: red;
+  }
+  100% {
+    border-color: darkred;
+  }
 }

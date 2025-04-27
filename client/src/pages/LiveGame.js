@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom"; // ✅ Added for Sign Up / Login links
 import GameBoard from "../components/GameBoard";
 import ReplayOverlay from "../components/ReplayOverlay";
 import axios from "axios";
 
-const LiveGame = ({ user }) => { // ✅ Receive logged-in user
+const LiveGame = ({ user }) => { // Receive logged-in user
   const [gameState, setGameState] = useState("playing");
   const [direction, setDirection] = useState("RIGHT");
   const [guestUser, setGuestUser] = useState(null);
@@ -12,11 +11,11 @@ const LiveGame = ({ user }) => { // ✅ Receive logged-in user
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    if (!user && !guestCreatedRef.current) { // ✅ Only create guest if NOT logged in
+    if (!user && !guestCreatedRef.current) { //  Only create guest if NOT logged in
       guestCreatedRef.current = true;
       axios.post("http://localhost:8080/api/auth/guest")
         .then(res => {
-          console.log("✅ Guest user created:", res.data);
+          console.log(" Guest user created:", res.data);
           setGuestUser(res.data);
         })
         .catch(err => {
@@ -28,7 +27,7 @@ const LiveGame = ({ user }) => { // ✅ Receive logged-in user
   const handleGameOver = (finalScore) => {
     setGameState("gameover");
 
-    const currentUser = user || guestUser; // ✅ Use logged-in user OR guest
+    const currentUser = user || guestUser; // Use logged-in user OR guest
 
     if (currentUser) {
       axios.post("http://localhost:8080/api/players", {
@@ -36,14 +35,14 @@ const LiveGame = ({ user }) => { // ✅ Receive logged-in user
         score: finalScore,
       })
         .then(() => {
-          console.log("✅ Score saved successfully");
+          console.log("✅Score saved successfully");
           setRefreshTrigger(prev => prev + 1);
         })
         .catch((err) => {
-          console.error("❌ Failed to save score", err);
+          console.error("Failed to save score", err);
         });
     } else {
-      console.warn("⚠️ No user ready yet");
+      console.warn(" No user ready yet");
     }
   };
 
@@ -78,19 +77,7 @@ const LiveGame = ({ user }) => { // ✅ Receive logged-in user
 
   return (
     <div style={{ position: "relative" }}>
-      {/* ✅ Auth buttons if user is NOT logged in */}
-      {!user && (
-        <div style={{ position: "absolute", top: 10, right: 10 }}>
-          <Link to="/signup">
-            <button style={{ marginRight: "10px" }}>Sign Up</button>
-          </Link>
-          <Link to="/login">
-            <button>Login</button>
-          </Link>
-        </div>
-      )}
-
-      {/* 🎮 Main GameBoard and ReplayOverlay */}
+      {/* Main GameBoard and ReplayOverlay */}
       <GameBoard
         gameState={gameState}
         direction={direction}
