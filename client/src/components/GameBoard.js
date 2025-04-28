@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import './GameBoard.css'; // Correct CSS file
 
 const CELL_SIZE = 20;
 const WIDTH = 20;
@@ -54,10 +55,10 @@ const GameBoard = ({ direction, gameState, onGameOver }) => {
     if (
       newHead[0] < 0 || newHead[1] < 0 ||
       newHead[0] >= WIDTH || newHead[1] >= HEIGHT ||
-      snake.some(([x, y]) => x === newHead[0] && y === newHead[1])
+      snake.some(([sx, sy]) => sx === newHead[0] && sy === newHead[1])
     ) {
       clearInterval(intervalRef.current);
-      onGameOver(score); // Send final score up to LiveGame
+      onGameOver(score);
       return;
     }
 
@@ -75,19 +76,7 @@ const GameBoard = ({ direction, gameState, onGameOver }) => {
   };
 
   return (
-    <div
-      className={gameState === "gameover" ? "flash-border" : ""}
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${WIDTH}, ${CELL_SIZE}px)`,
-        gridTemplateRows: `repeat(${HEIGHT}, ${CELL_SIZE}px)`,
-        border: '2px solid #000',
-        margin: '20px auto',
-        width: WIDTH * CELL_SIZE,
-        height: HEIGHT * CELL_SIZE,
-        position: 'relative'
-      }}
-    >
+    <div className="game-board"> {/* FIXED classname */}
       {[...Array(WIDTH * HEIGHT)].map((_, i) => {
         const x = i % WIDTH;
         const y = Math.floor(i / WIDTH);
@@ -97,12 +86,7 @@ const GameBoard = ({ direction, gameState, onGameOver }) => {
         return (
           <div
             key={i}
-            style={{
-              width: CELL_SIZE,
-              height: CELL_SIZE,
-              backgroundColor: isSnake ? 'green' : isFood ? 'red' : 'white',
-              border: '1px solid #ccc',
-            }}
+            className={`cell ${isSnake ? 'snake' : isFood ? 'food' : ''}`}
           />
         );
       })}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import GameBoard from "../components/GameBoard";
 import ReplayOverlay from "../components/ReplayOverlay";
 import axios from "axios";
 
-const LiveGame = ({ user }) => { // Receive logged-in user
+const LiveGame = ({ user }) => {
   const [gameState, setGameState] = useState("playing");
   const [direction, setDirection] = useState("RIGHT");
   const [guestUser, setGuestUser] = useState(null);
@@ -11,11 +12,11 @@ const LiveGame = ({ user }) => { // Receive logged-in user
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    if (!user && !guestCreatedRef.current) { //  Only create guest if NOT logged in
+    if (!user && !guestCreatedRef.current) {
       guestCreatedRef.current = true;
       axios.post("http://localhost:8080/api/auth/guest")
         .then(res => {
-          console.log(" Guest user created:", res.data);
+          console.log("✅ Guest user created:", res.data);
           setGuestUser(res.data);
         })
         .catch(err => {
@@ -26,23 +27,21 @@ const LiveGame = ({ user }) => { // Receive logged-in user
 
   const handleGameOver = (finalScore) => {
     setGameState("gameover");
-
-    const currentUser = user || guestUser; // Use logged-in user OR guest
-
+    const currentUser = user || guestUser;
     if (currentUser) {
       axios.post("http://localhost:8080/api/players", {
         id: currentUser.id,
         score: finalScore,
       })
         .then(() => {
-          console.log("✅Score saved successfully");
+          console.log("✅ Score saved successfully");
           setRefreshTrigger(prev => prev + 1);
         })
         .catch((err) => {
-          console.error("Failed to save score", err);
+          console.error("❌ Failed to save score", err);
         });
     } else {
-      console.warn(" No user ready yet");
+      console.warn("⚠️ No user ready yet");
     }
   };
 
@@ -76,18 +75,34 @@ const LiveGame = ({ user }) => { // Receive logged-in user
   }, [direction]);
 
   return (
-    <div style={{ position: "relative" }}>
-      {/* Main GameBoard and ReplayOverlay */}
-      <GameBoard
-        gameState={gameState}
-        direction={direction}
-        onGameOver={handleGameOver}
-      />
-      <ReplayOverlay
-        show={gameState === "gameover"}
-        onReplay={handleReplay}
-        refreshTrigger={refreshTrigger}
-      />
+    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      {/* Top bar */}
+      <div className="top-bar">
+        {user ? (
+          <div className="user-info">
+            Logged in as {user.username}
+            <button className="logout-button" onClick={() => window.location.href = "/"}>Logout</button>
+          </div>
+        ) : (
+          <div className="auth-links">
+            <Link to="/login">Login</Link> | <Link to="/signup">Sign Up</Link>
+          </div>
+        )}
+      </div>
+
+      {/* Game area */}
+      <div className="game-area">
+        <GameBoard
+          gameState={gameState}
+          direction={direction}
+          onGameOver={handleGameOver}
+        />
+        <ReplayOverlay
+          show={gameState === "gameover"}
+          onReplay={handleReplay}
+          refreshTrigger={refreshTrigger}
+        />
+      </div>
     </div>
   );
 };
